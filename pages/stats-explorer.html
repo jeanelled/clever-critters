@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clever Critters Collection | Statistics Explorer</title>
+  <link rel="icon" type="image/png" href="../assets/images/Favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/styles.css">
+  <style>
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.2rem;
+      margin-top: 2rem;
+    }
+
+    .stat-card {
+      background: linear-gradient(135deg, rgba(220, 236, 233, 0.4), rgba(246, 199, 179, 0.4));
+      border-radius: 12px;
+      padding: 1rem;
+      text-align: center;
+      border: 1px solid rgba(0, 99, 115, 0.1);
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: #006373;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-value {
+      font-size: 1.8rem;
+      color: #00181c;
+      font-family: "Fraunces", Georgia, serif;
+      font-weight: 700;
+    }
+
+    .controls-section {
+      background: var(--white);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      box-shadow: var(--shadow-soft);
+      margin-bottom: 2rem;
+      animation: rise 600ms ease forwards;
+      opacity: 0;
+      animation-delay: 120ms;
+    }
+
+    .control-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .control-group h3 {
+      margin: 0 0 0.8rem 0;
+      font-size: 1.1rem;
+      color: #006373;
+    }
+
+    .button-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0.6rem;
+    }
+
+    .point-btn {
+      padding: 0.6rem;
+      border: none;
+      border-radius: 8px;
+      background: linear-gradient(135deg, rgba(220, 236, 233, 0.8), rgba(246, 199, 179, 0.8));
+      color: #006373;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease;
+      border: 2px solid rgba(0, 99, 115, 0.2);
+    }
+
+    .point-btn:hover {
+      transform: translateY(-2px);
+      background: linear-gradient(135deg, rgba(220, 236, 233, 1), rgba(246, 199, 179, 1));
+      box-shadow: 0 6px 16px rgba(0, 99, 115, 0.15);
+    }
+
+    .point-btn:active {
+      transform: translateY(0);
+    }
+
+    .example-buttons {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 0.6rem;
+    }
+
+    .example-btn {
+      padding: 0.65rem;
+      border: none;
+      border-radius: 999px;
+      background: #dcece9;
+      color: #006373;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 180ms ease, box-shadow 180ms ease;
+      font-size: 0.95rem;
+    }
+
+    .example-btn:hover {
+      background: #006373;
+      color: white;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 12px rgba(0, 99, 115, 0.2);
+    }
+
+    .reset-btn {
+      padding: 0.65rem 1.2rem;
+      border: none;
+      border-radius: 999px;
+      background: #f6c7b3;
+      color: #00181c;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 180ms ease, box-shadow 180ms ease;
+    }
+
+    .reset-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 12px rgba(0, 99, 115, 0.15);
+    }
+
+    .visualization-section {
+      background: var(--white);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      box-shadow: var(--shadow-soft);
+      margin-bottom: 2rem;
+      animation: rise 600ms ease forwards;
+      opacity: 0;
+      animation-delay: 220ms;
+    }
+
+    #dotPlot {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+    }
+
+    #statsDisplay {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+      animation: rise 600ms ease forwards;
+      opacity: 0;
+      animation-delay: 320ms;
+    }
+
+    .data-count {
+      text-align: center;
+      font-size: 1.1rem;
+      color: #006373;
+      font-weight: 700;
+      margin-top: 1rem;
+      padding: 1rem;
+      background: rgba(220, 236, 233, 0.3);
+      border-radius: 8px;
+    }
+
+    .instructions {
+      background: rgba(246, 199, 179, 0.2);
+      border-left: 4px solid #f6c7b3;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+      font-size: 0.95rem;
+      color: #00181c;
+    }
+
+    .layout-row {
+      display: grid;
+      grid-template-columns: 1fr 1.3fr;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    @media (max-width: 900px) {
+      .layout-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 500px) {
+      .button-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .example-buttons {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="site-shell">
+    <nav class="top-nav" aria-label="Main navigation">
+      <a class="brand" href="../index.html">
+        <img src="../assets/images/curious_critters_logo.png" alt="Clever Critters Collection logo">
+        <span class="brand-text">Clever Critters Collection</span>
+      </a>
+      <div class="nav-links">
+        <a href="../index.html">Home</a>
+        <a href="activities.html">Activities</a>
+        <a href="author.html">Author</a>
+        <a href="ambassadors.html">Book Ambassadors</a>
+      </div>
+    </nav>
+
+    <header class="hero">
+      <span class="kicker">Interactive Learning</span>
+      <h1>📊 Statistics Explorer</h1>
+      <p>
+        Dive into data! Add points, watch calculations happen in real-time, and discover what min, max, mean, median, mode, range, sum, and outliers really mean. Play around with example datasets or create your own!
+      </p>
+    </header>
+
+    <main class="grid">
+      <div class="instructions">
+        💡 <strong>Tip:</strong> Click the numbered buttons to add data points, or load an example dataset. Click on dots in the plot to remove them!
+      </div>
+
+      <div class="layout-row">
+        <section class="controls-section">
+          <div class="control-group">
+            <h3>Add Individual Points</h3>
+            <div class="button-grid">
+              <button class="point-btn" id="btn1">1</button>
+              <button class="point-btn" id="btn2">2</button>
+              <button class="point-btn" id="btn3">3</button>
+              <button class="point-btn" id="btn4">4</button>
+              <button class="point-btn" id="btn5">5</button>
+              <button class="point-btn" id="btn6">6</button>
+              <button class="point-btn" id="btn7">7</button>
+              <button class="point-btn" id="btn8">8</button>
+              <button class="point-btn" id="btn9">9</button>
+              <button class="point-btn" id="btn10">10</button>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <h3>Load Example Datasets</h3>
+            <div class="example-buttons">
+              <button class="example-btn" id="exHeights">📏 Heights (cm)</button>
+              <button class="example-btn" id="exScores">📝 Test Scores</button>
+              <button class="example-btn" id="exRain">🌧️ Days of Rain</button>
+              <button class="example-btn" id="exBooks">📚 Books Read</button>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <button class="reset-btn" id="resetBtn">Clear All Data</button>
+            <div class="data-count" id="dataCount">Data points: 0</div>
+          </div>
+        </section>
+
+        <section class="visualization-section">
+          <h2>Data Visualization</h2>
+          <p style="color: #666; font-size: 0.95rem;">Hover over dots to see values. Click a dot to remove it.</p>
+          <div id="dotPlot"></div>
+        </section>
+      </div>
+
+      <section>
+        <h2>Statistics</h2>
+        <div id="statsDisplay" class="stats-grid"></div>
+      </section>
+    </main>
+
+    <p class="footer-note">Explore statistics concepts from the Clever Critters Collection! See how data points influence calculations and discover statistical patterns.</p>
+  </div>
+
+  <script src="../assets/js/stats-explorer.js"></script>
+</body>
+</html>
